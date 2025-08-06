@@ -34,8 +34,7 @@ export const signUpUser = async (req, res) => {
             name: newUser.name,
             email: newUser.email,
             username: newUser.username,
-            bio: newUser.bio,
-            profilePic: newUser.profilePic
+            bio: newUser.bio, 
         });
 
     } catch (error) {
@@ -79,7 +78,7 @@ export const logoutUser = async (req, res) => {
     try {
         res.cookie("accesstoken", "", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
             sameSite: "strict",
             maxAge: 1
         });

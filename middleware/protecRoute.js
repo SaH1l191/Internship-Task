@@ -1,27 +1,29 @@
 import User from '../models/userModel.js'
 import jwt from 'jsonwebtoken'
+
 const protectRoute = async (req, res, next) => {
+  try {
+    const token = req.cookies.accesstoken;
+    console.log("token",token)
 
-    try {
-        const token = req.cookies.accesstoken;
-        if (!token) {
-            return res.status(400).json({ message: 'Unauthorized' })
-        }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log("loggging decoded token here =  > > >>  ", decoded)
-
-        //the decoded. remaining should be the same name as the one used while jwt.sign methode
-        const user = await User.findById({ _id: decoded.userId }).select("-password")
-
-        req.user = user
-
-        next()
-    }
-    catch (error) {
-        return res.status(500).json({ message: error.message })
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized: No token provided' });
     }
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("decodede ",decoded)
 
+    const user = await User.findById(decoded.userId).select('-password');
 
-}
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized: User not found' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+  }
+};
+
 export default protectRoute;

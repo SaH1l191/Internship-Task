@@ -19,18 +19,19 @@ import {
     deleteComment
 } from '../controllers/commentController.js';
 
+import protectRoute from '../middleware/protecRoute.js'
 const router = express.Router();
 
-router.post("/posts/create", createPost);
+router.post("/posts/create",protectRoute, createPost);
 router.get("/posts", getAllPosts);
 
-router.post("/likes/like", likePost);
-router.post("/likes/unlike", unlikePost);
+router.post("/likes/like", protectRoute, likePost);
+router.post("/likes/unlike", protectRoute, unlikePost);
 
 router.get("/top-liked", topLikedBlogs);
 
-router.post("/comments/create", createComment); 
-router.put("/comments/:id", updateComment);
-router.delete("/comment/:id", deleteComment);
+router.post("/comments/create", protectRoute,createComment); 
+router.put("/comments/:id",protectRoute , updateComment);
+router.delete("/comment/:id",protectRoute, deleteComment);
 
 export default router;
